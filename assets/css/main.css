@@ -1937,6 +1937,16 @@ input, select, textarea {
 			width: auto;
 		}
 
+		.box.style3 {
+			background: none;
+			box-shadow: none;
+			padding: 0;
+
+			text-align: left;
+			width: 60%;
+			margin: auto;
+		}
+
 /* Icons */
 
 	.icon {

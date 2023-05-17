@@ -282,6 +282,18 @@ input, select, textarea {
 
 		}
 
+/* Basic element classes */
+
+	.box.desc {
+		color:rgb(0, 0, 0, 0.8)
+	}
+
+	code.compact {
+		line-height: 0px;
+		font-size: 0.8em
+	}
+
+
 /* Row */
 
 	.row {
@@ -1944,6 +1956,36 @@ input, select, textarea {
 
 			text-align: left;
 			width: 60%;
+			margin: auto;
+		}
+		
+		/* For titles */
+		.box.style4 {				
+			background: none;
+			box-shadow: none;
+			border-bottom: solid 2px;
+
+			text-align: left;
+			width: 100%;
+			margin: auto;
+		}
+
+		/* For code blocks and code block results*/
+		.box.style5 {
+			padding: 0;
+
+			text-align: left;
+			width: 80%;
+			margin: auto;
+		}
+
+		/* For descriptions */
+		.box.style6 {				
+			background: none;
+			box-shadow: none;
+
+			text-align: left;
+			width: 100%;
 			margin: auto;
 		}
 

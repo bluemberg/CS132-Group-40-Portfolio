@@ -310,6 +310,10 @@ input, select, textarea {
 		text-decoration: none;
 	}
 
+	a.colorless {
+		color: #3e3e3e;
+		text-decoration: none;
+	}
 /* Custom elements */
 
 

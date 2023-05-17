@@ -19,6 +19,7 @@
 				<ul class="container">
 					<li><a href="index.html">Home</a></li>
 					<li><a href="#top">Data Preprocessing</a></li>
+					<li><a href="visualization.html">Data Visualization</a></li>
 				</ul>
 			</nav>
 
@@ -40,6 +41,16 @@
 										<li><a href="#examine-distribution">Examining the Distribution</a></li>
 										<li><a href="#detecting-outliers">Detecting Outliers</a></li>
 										<li><a href="#imputing-outliers">Imputing the Outliers</a></li>
+									</ol>
+								</li>
+								<li><a href="#normalization">Normalization</a></li>
+								<li><a href="#categorical-encoding">Categorical Data Encoding</a></li>
+								<li>
+									Natural Language Processing
+									<ol style="list-style-type:upper-alpha">
+										<li><a href="#cleaning-setup">Cleaning and Setup</a></li>
+										<li><a href="#token-stopwords">Tokenization and Stopwords</a></li>
+										<li><a href="#lemmatization">Lemmatization</a></li>
 									</ol>
 								</li>
 							</ol>
@@ -529,10 +540,378 @@
 						<div id="imputing-outliers" class="col-12">
 							<section class="box style4 desc">
 								<h3>Handling Outliers: Imputing the Outliers</h3>
-									Outliers <br>
+									There are many ways to deal with outliers. In this project, since most of the columns are heavily skewed, 
+									and there are outliers that have an immense gap from the rest of the data, we decided that the best way to deal
+									with these outliers is by <b>imputing them with the median</b> of that column. This is because medians 
+									are robust against, and are not easily affected by outliers. <br><br>
+
+									With that, we now perform replacing the outliers for the aforementioned columns with the exception of 'Date posted'.
 							</section>
 						</div>
-						div ends here
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Impute outliers for 'Likes'
+	for outlier in likes_outliers:
+		dengvaxia_formatted["Likes"] = dengvaxia_formatted["Likes"].replace(
+				outlier, np.median(dengvaxia_formatted["Likes"]))
+	
+	# Impute outliers for 'Replies'
+	for outlier in replies_outliers:
+		dengvaxia_formatted["Replies"] = dengvaxia_formatted["Replies"].replace(
+				outlier, np.median(dengvaxia_formatted["Replies"]))
+	
+	# Impute outliers for 'Followers'
+	for outlier in retweets_outliers:
+		dengvaxia_formatted["Retweets"] = dengvaxia_formatted["Retweets"].replace(
+				outlier, np.median(dengvaxia_formatted["Retweets"]))
+
+	# Impute outliers for 'Followers'
+	for outlier in following_outliers:
+		dengvaxia_formatted["Following"] = dengvaxia_formatted["Following"].replace(
+				outlier, np.median(dengvaxia_formatted["Following"]))
+	
+	# Impute outliers for 'Followers'
+	for outlier in followers_outliers:
+		dengvaxia_formatted["Followers"] = dengvaxia_formatted["Followers"].replace(
+				outlier, np.median(dengvaxia_formatted["Followers"]))
+	
+	# Display updated histograms
+	columns = ["Likes", "Replies", "Retweets", "Following", "Followers"]
+	for i in range(len(columns)):
+		check_dist(i)
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<div class="grid-container">
+									<img src="images/4a_likes_after.png" alt="" class="result"/>
+									<img src="images/4b_replies_after.png" alt="" class="result"/>
+									<img src="images/4c_retweets_after.png" alt="" class="result"/>
+									<img src="images/4d_following_after.png" alt="" class="result"/>
+									<img src="images/4e_followers_after.png" alt="" class="result"/>
+								</div>
+							</section>
+						</div>
+						<div id="normalization" class="col-12">
+							<section class="box style4 desc">
+								<h3>Normalization</h3>
+									Now that outliers have been dealth with, normalizing the data for these columns will now result to a more feasible and justifiable model.<br>
+									This was done using sklearn's <b>MinMaxScaler</b>.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	from sklearn.preprocessing import MinMaxScaler
+
+	dengvaxia_scaled = dengvaxia_formatted.copy(deep=True)
+	scaler = MinMaxScaler()
+	
+	# Normalizes column using the MinMaxScaler
+	def normalize(column):
+			dengvaxia_scaled[[column]] = scaler.fit_transform(dengvaxia_scaled[[column]])
+	
+	# Normalize all numerical columns
+	numerical_columns = ["Likes", "Replies", "Retweets", "Following", "Followers"]
+	for column in numerical_columns:
+			normalize(column)
+	
+	# Display changes
+	unscaled_columns = dengvaxia_formatted[numerical_columns]
+	scaled_columns = dengvaxia_scaled[numerical_columns]
+	print(unscaled_columns.head(10))
+	print(scaled_columns.head(10))
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	<b># Before normalization</b>
+	  Likes   Replies  Retweets  Following  Followers
+	0    6.0        0.0          3.0         366.0         236.0
+	1    7.0        0.0          0.0         236.0        1297.0
+	2    4.0        1.0          0.0         793.0        2896.0
+	3   25.0        1.0          3.0        2094.0          49.0
+	4    6.0        1.0          0.0         589.0         209.0
+	5   24.0        1.0          6.0        1996.0        2310.0
+	6    8.0        1.0          1.0         920.0        3553.0
+	7    0.0        0.0          0.0         178.0           7.0
+	8    2.0        2.0          0.0         776.0        2135.0
+	9    2.0        0.0          0.0        2321.0        1461.0
+	<b># After normalization</b>
+	   Likes         Replies   Retweets   Following   Followers
+	0  0.113208     0.00  0.142857   0.099972   0.028260
+	1  0.132075     0.00  0.000000   0.063669   0.155311
+	2  0.075472     0.25  0.000000   0.219213   0.346785
+	3  0.471698     0.25  0.142857   0.582519   0.005868
+	4  0.113208     0.25  0.000000   0.162245   0.025027
+	5  0.452830     0.25  0.285714   0.555152   0.276614
+	6  0.150943     0.25  0.047619   0.254677   0.425458
+	7  0.000000     0.00  0.000000   0.047473   0.000838
+	8  0.037736     0.50  0.000000   0.214465   0.255658
+	9  0.037736     0.00  0.000000   0.645909   0.174949
+</code>
+</pre>
+							</section>
+						</div>
+						<div id="categorical-encoding" class="col-12">
+							<section class="box style4 desc">
+								<h3>Categorical Data Encoding</h3>
+								To make categorical data usable in analysis, it must converted into integer values through encoding.<br> 
+								<b>One hot encoding</b> is used since our categorical data are nominal.<br><br>
+								
+								For the column <b>'Tweet Type'</b> which can take on several different values at the same time, a manual encoding 
+								was performed to separate each type in their own columns.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	import numpy as np
+
+	# Using one-hot encoding to encode the Content type and Rating features
+	dengvaxia_encoded = pd.get_dummies(dengvaxia_scaled, prefix=['content-type', 'rating'],
+	        columns=['Content type', 'Rating'])
+	
+	# Encodes columns that can have multiple categories
+	def encode_multicategory(df, column, category):
+		return np.where(df[column].str.contains(category), 1, 0)
+	
+	# Manually encoding the Tweet Type feature
+	dengvaxia_encoded['Tweet Type'] = dengvaxia_encoded['Tweet Type'].str.lower()
+	dengvaxia_encoded['tweet-type_Text'] = encode_multicategory(dengvaxia_encoded, 'Tweet Type', 'text')
+	dengvaxia_encoded['tweet-type_Image'] = encode_multicategory(dengvaxia_encoded, 'Tweet Type', 'image')
+	dengvaxia_encoded['tweet-type_Video'] = encode_multicategory(dengvaxia_encoded, 'Tweet Type', 'video')
+	dengvaxia_encoded['tweet-type_URL'] = encode_multicategory(dengvaxia_encoded, 'Tweet Type', 'url')
+	dengvaxia_encoded['tweet-type_Reply'] = encode_multicategory(dengvaxia_encoded, 'Tweet Type', 'reply')
+	dengvaxia_encoded.drop('Tweet Type', axis=1, inplace=True)
+	
+	# Display changes
+	print(dengvaxia_scaled.columns)   # Columns before encoding
+	print(dengvaxia_encoded.columns)  # Columns after encoding
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	<b>## Legend:</b> 
+	<label style="color: red">Red</label>: columns removed
+	<label style="color: green">Green</label>: columns added
+	<b># Before encoding</b>
+	Index(['Account type', 'Joined', 'Following', 'Followers', 'Tweet',
+		<label style="color: red">'Tweet Type'</label>, 'Date posted', <label style="color: red">'Content type'</label>, 'Likes', 'Replies',
+		'Retweets', <label style="color: red">'Rating'</label>],
+		dtype='object')
+	<b># After encoding</b>
+	Index(['Account type', 'Joined', 'Following', 'Followers', 'Tweet',
+		'Date posted', 'Likes', 'Replies', 'Retweets', <label style="color: green">'content-type_Emotional',
+			'content-type_Rational', 'rating_FALSE', 'rating_MISDIRECTION',
+			'rating_MISLEADING', 'rating_NEED CONTEXT', 'tweet-type_Text',
+			'tweet-type_Image', 'tweet-type_Video', 'tweet-type_URL',
+			'tweet-type_Reply']</label>,
+			dtype='object')
+
+</code>
+</pre>
+							</section>
+						</div>
+						<div id="cleaning-setup" class="col-12">
+							<section class="box style4 desc">
+								<h3>NLP: Cleaning and Setup</h3>
+								We start off by cleaning up the tweet contents.
+								To help in standardizing the tokens for NLP, we opted to <b>translate all the tweets to English</b>. <br>
+								Unnecessary data such as emojis, URLs, and @mentions are also removed in this step. <br><br>
+								The <b>googletrans</b> package was used to translate the tweets.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Note: googletrans 3.1.0a0 is already installed
+	from googletrans import Translator
+	import re
+	import string
+	
+	dengvaxia_nlp = dengvaxia_encoded.copy()
+	tweets_raw = dengvaxia_nlp['Tweet'].tolist()
+	
+	# Remove mentions
+	def removeMentions(text):
+		return re.sub(r'@\S+', '', text)
+			
+	tweets_clean = [removeMentions(t) for t in tweets_raw]
+	
+	# Remove URLs
+	def removeURLs(text):
+		return re.sub(r'http\S+', '', text)
+			
+	tweets_clean = [removeURLs(t) for t in tweets_clean]
+	
+	# Remove emojis
+	url_emoji = "https://drive.google.com/uc?id=1G1vIkkbqPBYPKHcQ8qy0G2zkoab2Qv4v"
+	df_emoji = pd.read_pickle(url_emoji)
+	df_emoji = {v: k for k, v in df_emoji.items()}
+	
+	def removeEmojis(text):
+		for emot in df_emoji:
+			text = re.sub(r'('+emot+')', "", text)
+		return text
+	
+	tweets_clean = [removeEmojis(t) for t in tweets_clean]
+	
+	# Remove emoticons
+	url_emote = "https://drive.google.com/uc?id=1HDpafp97gCl9xZTQWMgP2kKK_NuhENlE"
+	df_emote = pd.read_pickle(url_emote)
+	
+	def removeEmoticons(text):
+		for emot in df_emote:
+			text = re.sub(u'('+emot+')', "", text)
+			text = text.replace("<3", "" ) # not included in emoticons database
+		return text
+	
+	tweets_clean = [removeEmoticons(t) for t in tweets_clean]
+	
+	# Translate tweets to english
+	translator = Translator()
+	tweets_en = [t.text for t in translator.translate(tweets_clean, src='tl', dest='en')]
+	dengvaxia_nlp['Tweet'] = tweets_en
+	
+	# Display results
+	changes = pd.DataFrame({'Raw Tweet': tweets_raw, 'Cleaned Tweet': tweets_en})
+	changes.style.set_properties(**{"text-align": "left", "max-width": "400px", "white-space": "normal"})
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/5a_nlp_1.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div id="token-stopwords" class="col-12">
+							<section class="box style4 desc">
+								<h3>NLP: Tokenization and Stopwords</h3>
+								<b>Tokenization</b> is done to separate the tweets into smaller pieces called tokens. Here, we chose tokens to be words. <br>
+								Additionally, <b>stop words are removed</b> since they carry little to no information during analysis.<br><br>
+								The nltk package's <b>stopwords and word_tokenize</b> functions were used to facilitate this.
+
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Data for removing stop words and punctuations
+	from nltk.downloader import download
+	
+	download("punkt")
+	download("stopwords")
+	
+	from nltk.corpus import stopwords
+	from nltk.tokenize import word_tokenize
+	
+	tweets = dengvaxia_nlp["Tweet"].tolist()
+	
+	# Convert to lowercase
+	tweets = [t.lower() for t in tweets]
+	
+	# Remove punctuation
+	tweets = [t.translate(str.maketrans("", "", string.punctuation)) for t in tweets]
+	
+	tweets_tokenized = []
+	for tweet in tweets:
+		# Tokenize the text into words
+		words = word_tokenize(tweet)
+
+		# Remove stopwords
+		filtered_words = [
+				word for word in words if word.lower() not in stopwords.words("english")
+		]
+
+		# Convert back into sentence
+		filtered_sentence = " ".join(filtered_words)
+		tweets_tokenized.append(filtered_sentence)
+	dengvaxia_nlp["Tweet"] = tweets_tokenized
+	
+	# Display results
+	changes = pd.DataFrame({"Tweet": tweets_en, "Tokens": [t.split() for t in tweets_tokenized]})
+	changes.style.set_properties(**{"text-align": "left", "max-width": "400px", "white-space": "normal"})
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/5b_nlp_2.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div id="lemmatization" class="col-12">
+							<section class="box style4 desc">
+								<h3>NLP: Lemmatization</h3>
+								Since stemming gets rid of a lot of information which results in inaccurate root words, 
+								we decided to perform the more costly but more accurate <b>lemmatization</b>. <br><br>
+								The nltk package's <b>WordNetLemmatizer</b> was used to facilitate this.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	from nltk.stem import WordNetLemmatizer
+
+	download("wordnet")
+	download("omw-1.4")
+	
+	# Initialize the Lemmatizer
+	lemmatizer = WordNetLemmatizer()
+	tweets = dengvaxia_nlp["Tweet"].tolist()
+	
+	tweets_lemmatized = []
+	for tweet in tweets:
+			words = tweet.split()
+	
+			# Lemmatize each word
+			lemmatized_words = [lemmatizer.lemmatize(word) for word in words]
+	
+			# Convert back into sentence
+			lemmatized_sentence = " ".join(lemmatized_words)
+			tweets_lemmatized.append(lemmatized_sentence)
+	dengvaxia_nlp["Tweet"] = tweets_lemmatized
+	
+	# Display results
+	changes = pd.DataFrame(
+			{"Tokens": tweets, "Lemmatized": [t.split() for t in tweets_lemmatized]}
+	)
+	changes.style.set_properties(**{"text-align": "left", "max-width": "400px", "white-space": "normal"})
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/5c_nlp_3.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style4 desc">
+								<h3>Preprocessing finished</h3>
+								With that, the entire <b>Data Preprocessing </b>phase is complete. 
+								What follows next is the <b><a href="visualization" class="colorless">Data Visualization</a></b>.
+							</section>
+						</div>
 					</div>
 				</div>
 			</article>

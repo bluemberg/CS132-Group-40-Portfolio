@@ -297,6 +297,10 @@ input, select, textarea {
 		margin: 16px;
 	}
 
+	ol {
+		margin: 0;
+	}
+
 	ol.outline li{
 		font-weight: bold;
 	}
@@ -306,6 +310,10 @@ input, select, textarea {
 		text-decoration: none;
 	}
 
+	a.colorless {
+		color: #3e3e3e;
+		text-decoration: none;
+	}
 /* Custom elements */
 
 

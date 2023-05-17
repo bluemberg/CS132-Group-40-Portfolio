@@ -297,11 +297,11 @@ input, select, textarea {
 		margin: 16px;
 	}
 
-	ol li{
+	ol.outline li{
 		font-weight: bold;
 	}
 
-	ol li a {
+	ol.outline li a {
 		color: #3e3e3e;
 		text-decoration: none;
 	}

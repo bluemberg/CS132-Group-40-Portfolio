@@ -31,13 +31,14 @@
 				<div class="col-12">
 					<section class="box style3 compact desc">
 						<h3>Outline</h3>
-							<ol style="list-style-type:upper-roman">
+							<ol class="outline" style="list-style-type:upper-roman">
 								<li><a href="#missing-values">Handling missing values</a></li>
 								<li><a href="#format-consistency">Format Consistency</a></li>
 								<li>
 									Handling Outliers
 									<ol style="list-style-type:upper-alpha">
-										<li><a href="#examine-distribution">Examining the distribution</a></li>
+										<li><a href="#examine-distribution">Examining the Distribution</a></li>
+										<li><a href="#detecting-outliers">Detecting Outliers</a></li>
 									</ol>
 								</li>
 							</ol>
@@ -146,7 +147,7 @@
 							<section class="box style5">
 <pre>
 <code class="compact">
-	Number of missing data in Account type: 1
+	<label style="color: red">Number of missing data in Account type: 1</label>
 	Number of missing data in Joined: 0
 	Number of missing data in Following: 0
 	Number of missing data in Followers: 0
@@ -210,6 +211,111 @@
 						<div id="examine-distribution" class="col-12">
 							<section class="box style4 desc">
 								<h3>Handling Outliers: Examining the Distribution</h3>
+								We decided to handle outliers for the columns <b>'Likes', 'Replies', 'Retweets', 'Following', 'Followers',
+								and 'Date posted',</b> as outliers from these columns will most likely skew the dataset during the modeling phase. <br><br>
+
+								Recall that we can detect outliers using <b>Z-scores</b> or <b>Interquartile Range (IQR)</b>. <br>
+								Z-scores, however are only effective on normally distributed data while IQR works well for skewed data. 
+								Hence, it is important to first visualize the distributions for the aforementioned columns.
+								The code block below plots the data of each column to a <b>histogram</b>.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	import seaborn as sns
+	import matplotlib.pyplot as plt
+	
+	sns.set_theme()
+	
+	# Displays histogram of a column
+	def check_dist_col(column):
+			plt.figure(figsize=(16, 5))
+			plt.subplot(2, 1, 1)
+			sns.histplot(dengvaxia_formatted[column], kde=True)
+	
+			plt.show()
+	
+	# Displays histogram of a column using their index
+	def check_dist(i):
+			plt.figure(figsize=(16, 5))
+			plt.subplot(2, 3, i + 1)
+			sns.histplot(dengvaxia_formatted[columns[i]], kde=True)
+	
+			plt.show()
+	
+	# Display histograms for the aforementioned columns
+	columns = ["Likes", "Replies", "Retweets", "Following", "Followers", "Date posted"]
+	for i in range(len(columns)):
+			check_dist(i)
+	
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<div class="grid-container">
+									<img src="images/2a_likes_before.png" alt="" class="result"/>
+									<img src="images/2b_replies_before.png" alt="" class="result"/>
+									<img src="images/2c_retweets_before.png" alt="" class="result"/>
+									<img src="images/2d_following_before.png" alt="" class="result"/>
+									<img src="images/2e_followers_before.png" alt="" class="result"/>
+									<img src="images/2f_datePosted_before.png" alt="" class="result"/>
+								</div>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								Here we observe that <b>most of the columns are skewed to the left</b>, and not normally distributed.
+								For this reason, we must perform <b>IQR</b> for detecting outliers. <br>
+								Before that, however, there seems to be a blank histogram for the <b>'Followers'</b> column.
+								Let's take a closer look using the describe() function.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	dengvaxia_formatted["Followers"].describe()
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	count    1.500000e+02
+	<label style="color: black">mean     6.739463e+04</label>
+	<label style="color: red">std      7.299880e+05</label>
+	<label style="color: black">min      0.000000e+00</label>
+	25%      2.307500e+02
+	50%      9.985000e+02
+	75%      3.543750e+03
+	<label style="color: red">max      8.944169e+06</label>
+	Name: Followers, dtype: float64
+</code>
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								This means that for the 'Followers' column: <br>
+								<ol>
+									<li>The minimum value is 0 followers</li>
+									<li>The maximum value is <label style="color: red">8944169 followers!</label></li>
+									<li>A mean of 67394 but a <label style="color: red">standard devation of 729988!</label></li>
+								</ol>
+								The account with 8944169 followers <b>severely skewed the data</b> as the other values are relatively extremely small, 
+								causing the histogram for 'Followers' column to be seemingly blank. The gap between the maximum value and the rest is extremely huge. <br>  <br>
+								We will take a look at this again when we finally handle the outliers.
+							</section>
+						</div>
+						<div id="detecting-outliers" class="col-12">
+							<section class="box style4 desc">
+								<h3>Handling Outliers: Detecting Outliers</h3>
 									Outliers <br>
 							</section>
 						</div>

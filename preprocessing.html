@@ -39,6 +39,7 @@
 									<ol style="list-style-type:upper-alpha">
 										<li><a href="#examine-distribution">Examining the Distribution</a></li>
 										<li><a href="#detecting-outliers">Detecting Outliers</a></li>
+										<li><a href="#imputing-outliers">Imputing the Outliers</a></li>
 									</ol>
 								</li>
 							</ol>
@@ -249,7 +250,6 @@
 	columns = ["Likes", "Replies", "Retweets", "Following", "Followers", "Date posted"]
 	for i in range(len(columns)):
 			check_dist(i)
-	
 </code> 
 </pre>
 							</section>
@@ -316,6 +316,219 @@
 						<div id="detecting-outliers" class="col-12">
 							<section class="box style4 desc">
 								<h3>Handling Outliers: Detecting Outliers</h3>
+									Recall that in box plots, any data point outside its whiskers, i.e. 1.5 times the interquartile range 
+									above the upper quartile and below the lower quartile <b>(Q1 - 1.5 * IQR or Q3 + 1.5 * IQR)</b>, is an outlier. <br>
+
+									For easier execution of detecting outliers for different categories, we create a function that takes in a column of the dataset as its parameter.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	import matplotlib.pyplot as plt
+	import seaborn as sns
+	import numpy as np
+	import plotly.express as px
+	
+	def visualize_outlier(column):
+			# Display boxplot
+			sns.boxplot(dengvaxia_formatted, y=column, orient="v").set(xlabel=None, ylabel=column)
+	
+			# Find q1 and q3 values
+			q1, q3 = np.percentile(sorted(dengvaxia_formatted[column]), [25, 75])
+			print(f"Lower quartile (Q1): {q1}")
+			print(f"Higher quartile (Q3): {q3}")
+	
+			# Compute IRQ
+			iqr = q3 - q1
+			print(f"IQR: {iqr}")
+	
+			# Find lower and upper bounds
+			lower_bound = q1 - (1.5 * iqr)
+			upper_bound = q3 + (1.5 * iqr)
+	
+			outliers = [x for x in dengvaxia_formatted[column] if x <= lower_bound or x >= upper_bound]
+	
+			# Display results
+			print(f"Outliers: {outliers}")
+			print(f"Number of outliers: {len(outliers)}")
+			return outliers
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								<h3>Outliers for 'Likes'</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	likes_outliers = visualize_outlier("Likes")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	Lower quartile (Q1): 2.0
+	Higher quartile (Q3): 22.75
+	IQR: 20.75
+	<label style="color: black">Outliers: [63, 365, 64, 54, 114, 65, 79, 95, 69, 228, 67, 88, 55, 71]</label>
+	<label style="color: green">Number of outliers: 14</label>
+</code>
+</pre>
+								<img src="images/3a_likes_outliers.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								There are <b><label style="color: green">14 outliers</label></b> in 'Likes', which are the tweets with 
+								<b><label style="color: black">63, 365, 64, 54, 114, 65, 79, 95, 69, 228, 67, 88, 55, and 71 likes</label></b>. <br><br><br>
+
+								<h3>Outliers for 'Replies'</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	replies_outliers = visualize_outlier("Replies")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	Lower quartile (Q1): 0.0
+	Higher quartile (Q3): 2.0
+	IQR: 2.0
+	<label style="color: black">Outliers: [18, 5, 6, 6, 18, 15, 9, 12, 5, 6, 8, 5]</label>
+	<label style="color: green">Number of outliers: 12</label>
+</code>
+</pre>
+								<img src="images/3b_replies_outliers.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								There are <b><label style="color: green">12 outliers</label></b> in 'Replies', which are the tweets with 
+								<b><label style="color: black">18, 5, 6, 6, 18, 15, 9, 12, 5, 6, 8, and 5 replies</label></b>. <br><br><br>
+
+								<h3>And so on...</h3>
+								The following is a compilation of the outliers detected from the columns <b>'Retweets', 'Following', and 'Followers'</b>.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	retweets_outliers = visualize_outlier("Retweets")
+	following_outliers = visualize_outlier("Following")
+	followers_outliers = visualize_outlier("Followers")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	<b># IQR result for 'Retweets'</b>
+	Lower quartile (Q1): 0.0
+	Higher quartile (Q3): 8.75
+	IQR: 8.75
+	<label style="color: black">Outliers: [24, 118, 39, 38, 84, 31, 31, 42, 27, 50, 25, 31, 23, 29]</label>
+	<label style="color: green">Number of outliers: 14</label>
+</code>
+</pre>
+								<img src="images/3c_retweets_outliers.png" alt="" class="result"/>
+<pre>
+<code class="compact">	
+	<b># IQR result for 'Following'</b>
+	Lower quartile (Q1): 357.0
+	Higher quartile (Q3): 1995.0
+	IQR: 1638.0
+	<label style="color: black">Outliers: [4998, 4703, 9380, 4874, 15211, 5895, 4995, 4980, 5895, 4572, 4871, 11780, 5655, 23135]</label>
+	<label style="color: green">Number of outliers: 14</label>
+</code>
+</pre>
+								<img src="images/3d_following_outliers.png" alt="" class="result"/>
+<pre>
+<code class="compact">	
+	<b># IQR result for 'Followers'</b>
+	Lower quartile (Q1): 230.75
+	Higher quartile (Q3): 3543.75
+	IQR: 3313.0
+	<label style="color: black">Outliers: [128160, 21916, 21091, 10215, 10471, 72669, 13796, 30149, 65400, 70287, 21613, 161352, 13884, 28791, 8944169, 23248, 28790, 
+		       60461, 13757, 118917, 8556, 28790, 23253, 25194]</label>
+	<label style="color: green">Number of outliers: 24</label>
+</code>
+</pre>
+								<img src="images/3e_followers_outliers.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								<h3>Outliers for 'Date posted'</h3>
+								Since datetime formats cannot be easily visualized using box plots, we just manually calculate for the
+								quartiles and the outliers <br>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Find q1 and q3 values
+	q1, q3 = np.percentile(sorted(dengvaxia_formatted["Date posted"]), [25, 75])
+	print(f"Lower quartile (Q1): {q1}")
+	print(f"Higher quartile (Q3): {q3}")
+	
+	# Compute IRQ
+	iqr = q3 - q1
+	print(f"IQR: {iqr}")
+	
+	# Find lower and upper bounds
+	lower_bound = q1 - (1.5 * iqr)
+	upper_bound = q3 + (1.5 * iqr)
+	
+	date_outliers = [x for x in dengvaxia_formatted["Date posted"] if x <= lower_bound or x >= upper_bound]
+	
+	print(f"Outliers: {date_outliers}")
+	print(f"Number of outliers: {len(date_outliers)}")
+	
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	Lower quartile (Q1): 2018-09-23 14:01:00
+	Higher quartile (Q3): 2021-06-12 18:30:30
+	IQR: 993 days 04:29:30
+	<label style="color: black">Outliers: []</label>
+	<label style="color: green">Number of outliers: 0</label>
+</code>
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								There are <b>no outliers</b> for 'Date posted'. This means that we no longer need to handle outliers for this column.
+							</section>
+						</div>
+						<div id="imputing-outliers" class="col-12">
+							<section class="box style4 desc">
+								<h3>Handling Outliers: Imputing the Outliers</h3>
 									Outliers <br>
 							</section>
 						</div>

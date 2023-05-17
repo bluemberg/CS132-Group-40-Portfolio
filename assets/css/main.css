@@ -293,6 +293,18 @@ input, select, textarea {
 		font-size: 0.8em
 	}
 
+	img.result{
+		margin: 16px;
+	}
+
+	ol li{
+		font-weight: bold;
+	}
+
+	ol li a {
+		color: #3e3e3e;
+		text-decoration: none;
+	}
 
 /* Row */
 
@@ -1989,6 +2001,10 @@ input, select, textarea {
 			margin: auto;
 		}
 
+		.box.compact {
+			width: 40%
+		}
+
 /* Icons */
 
 	.icon {
@@ -2045,6 +2061,10 @@ input, select, textarea {
 		text-align: center;
 	}
 
+		.wrapper.compact {
+			padding: 2em 0 2em 0;
+		}
+
 		.wrapper.style1 {
 			background-image: none;
 			background-color: #fff;
@@ -2054,6 +2074,7 @@ input, select, textarea {
 			background-color: #fafafa;
 			text-shadow: 1px 1px 0px #fff;
 		}
+		
 
 		.wrapper.style3 {
 			background-color: #f4f4f4;

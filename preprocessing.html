@@ -22,15 +22,34 @@
 				</ul>
 			</nav>
 
-			<!-- Problem -->
-			<article id="problem" class="wrapper style2">
+			<!-- Header -->
+			<article class="wrapper style1 compact">
+				<header>
+					<h2>Data Preprocessing</h2>
+					<p>This section details how the team preprocessed the data gathered during the <b>data collection</b> phase.</p>
+				</header>
+				<div class="col-12">
+					<section class="box style3 compact desc">
+						<h3>Outline</h3>
+							<ol style="list-style-type:upper-roman">
+								<li><a href="#missing-values">Handling missing values</a></li>
+								<li><a href="#format-consistency">Format Consistency</a></li>
+								<li>
+									Handling Outliers
+									<ol style="list-style-type:upper-alpha">
+										<li><a href="#examine-distribution">Examining the distribution</a></li>
+									</ol>
+								</li>
+							</ol>
+					</section>
+				</div>
+			</article>
+		
+			<!-- Content -->
+			<article class="wrapper style2 compact">
 				<div class="container">
-					<header>
-						<h2>Data Preprocessing</h2>
-						<p>This section details how the team preprocessed the data gathered during the <b>data collection</b> phase.</p>
-					</header>
 					<div class="row aln-center">
-						<div class="col-12">
+						<div id="missing-values" class="col-12">
 							<section class="box style4 desc">
 								<h3>Handling missing values</h3>
 									The stark majority of preprocessing was performed using Deepnote as the collaboration platform. <br>
@@ -143,10 +162,55 @@
 </pre>
 							</section>
 						</div>
-						<div class="col-12">
+						<div id="format-consistency" class="col-12">
 							<section class="box style4 desc">
 								<h3>Format Consistency</h3>
-									...
+									We then performed <b>data validation</b> by ensuring that every entry in each column has the
+									correct data type. <br>
+									This involved converting all the date strings into <b>datetimes</b> and all the numerical counts
+									into <b>integers</b>.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# DF to store formatted data
+	dengvaxia_formatted = dengvaxia_data.copy()
+
+	# Convert dates to datetime
+	dengvaxia_formatted["Joined"] = pd.to_datetime(dengvaxia_formatted["Joined"], format="%m/%y")
+	dengvaxia_formatted["Date posted"] = pd.to_datetime(dengvaxia_formatted["Date posted"], format="%d/%m/%y %H:%M",
+			errors="coerce").fillna(pd.to_datetime(dengvaxia_formatted["Date posted"], format="%d/%m/%Y %H:%M", errors="coerce"))
+	
+	# Convert floats to ints
+	dengvaxia_formatted["Following"] = dengvaxia_formatted["Following"].astype(int)
+	dengvaxia_formatted["Followers"] = dengvaxia_formatted["Followers"].astype(int)
+	dengvaxia_formatted["Likes"] = dengvaxia_formatted["Likes"].astype(int)
+	dengvaxia_formatted["Replies"] = dengvaxia_formatted["Replies"].astype(int)
+	dengvaxia_formatted["Retweets"] = dengvaxia_formatted["Retweets"].astype(int)
+	
+	# Display changes
+	changes = pd.DataFrame(
+		{
+			"Old datatype": dengvaxia_data.dtypes,
+			"New datatype": dengvaxia_formatted.dtypes,
+		}
+	)
+	changes.style.set_properties(**{"text-align": "left"})
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/1_format_results.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div id="examine-distribution" class="col-12">
+							<section class="box style4 desc">
+								<h3>Handling Outliers: Examining the Distribution</h3>
+									Outliers <br>
 							</section>
 						</div>
 						div ends here

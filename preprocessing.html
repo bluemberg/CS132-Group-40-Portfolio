@@ -42,6 +42,7 @@
 										<li><a href="#imputing-outliers">Imputing the Outliers</a></li>
 									</ol>
 								</li>
+								<li><a href="#normalization">Normalization</a></li>
 							</ol>
 					</section>
 				</div>
@@ -529,7 +530,67 @@
 						<div id="imputing-outliers" class="col-12">
 							<section class="box style4 desc">
 								<h3>Handling Outliers: Imputing the Outliers</h3>
-									Outliers <br>
+									There are many ways to deal with outliers. In this project, since most of the columns are heavily skewed, 
+									and there are outliers that have an immense gap from the rest of the data, we decided that the best way to deal
+									with these outliers is by <b>imputing them with the median</b> of that column. This is because medians 
+									are robust against, and are not easily affected by outliers. <br><br>
+
+									With that, we now perform replacing the outliers for the aforementioned columns with the exception of 'Date posted'.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Impute outliers for 'Likes'
+	for outlier in likes_outliers:
+		dengvaxia_formatted["Likes"] = dengvaxia_formatted["Likes"].replace(
+				outlier, np.median(dengvaxia_formatted["Likes"]))
+	
+	# Impute outliers for 'Replies'
+	for outlier in replies_outliers:
+		dengvaxia_formatted["Replies"] = dengvaxia_formatted["Replies"].replace(
+				outlier, np.median(dengvaxia_formatted["Replies"]))
+	
+	# Impute outliers for 'Followers'
+	for outlier in retweets_outliers:
+		dengvaxia_formatted["Retweets"] = dengvaxia_formatted["Retweets"].replace(
+				outlier, np.median(dengvaxia_formatted["Retweets"]))
+
+	# Impute outliers for 'Followers'
+	for outlier in following_outliers:
+		dengvaxia_formatted["Following"] = dengvaxia_formatted["Following"].replace(
+				outlier, np.median(dengvaxia_formatted["Following"]))
+	
+	# Impute outliers for 'Followers'
+	for outlier in followers_outliers:
+		dengvaxia_formatted["Followers"] = dengvaxia_formatted["Followers"].replace(
+				outlier, np.median(dengvaxia_formatted["Followers"]))
+	
+	# Display updated histograms
+	columns = ["Likes", "Replies", "Retweets", "Following", "Followers"]
+	for i in range(len(columns)):
+		check_dist(i)
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<div class="grid-container">
+									<img src="images/4a_likes_after.png" alt="" class="result"/>
+									<img src="images/4b_replies_after.png" alt="" class="result"/>
+									<img src="images/4c_retweets_after.png" alt="" class="result"/>
+									<img src="images/4d_following_after.png" alt="" class="result"/>
+									<img src="images/4e_followers_after.png" alt="" class="result"/>
+								</div>
+							</section>
+						</div>
+						<div id="normalization" class="col-12">
+							<section class="box style4 desc">
+								<h3>Normalization</h3>
+									Now that outliers have been dealth with, normalizing the data for these columns will now result to a more feasible and justifiable model.<br>
+									This was done using sklearn's <b>MinMaxScaler</b>.
 							</section>
 						</div>
 						div ends here

@@ -297,6 +297,10 @@ input, select, textarea {
 		margin: 16px;
 	}
 
+	ol {
+		margin: 0;
+	}
+
 	ol.outline li{
 		font-weight: bold;
 	}

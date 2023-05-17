@@ -282,6 +282,33 @@ input, select, textarea {
 
 		}
 
+/* Basic element classes */
+
+	.box.desc {
+		color:rgb(0, 0, 0, 0.8)
+	}
+
+	code.compact {
+		line-height: 0px;
+		font-size: 0.8em
+	}
+
+	img.result{
+		margin: 16px;
+	}
+
+	ol.outline li{
+		font-weight: bold;
+	}
+
+	ol.outline li a {
+		color: #3e3e3e;
+		text-decoration: none;
+	}
+
+/* Custom elements */
+
+
 /* Row */
 
 	.row {
@@ -1946,6 +1973,40 @@ input, select, textarea {
 			width: 60%;
 			margin: auto;
 		}
+		
+		/* For titles */
+		.box.style4 {				
+			background: none;
+			box-shadow: none;
+			border-bottom: solid 2px;
+
+			text-align: left;
+			width: 100%;
+			margin: auto;
+		}
+
+		/* For code blocks and code block results*/
+		.box.style5 {
+			padding: 0;
+
+			text-align: left;
+			width: 80%;
+			margin: auto;
+		}
+
+		/* For descriptions */
+		.box.style6 {				
+			background: none;
+			box-shadow: none;
+
+			text-align: left;
+			width: 100%;
+			margin: auto;
+		}
+
+		.box.compact {
+			width: 40%
+		}
 
 /* Icons */
 
@@ -2003,6 +2064,10 @@ input, select, textarea {
 		text-align: center;
 	}
 
+		.wrapper.compact {
+			padding: 2em 0 2em 0;
+		}
+
 		.wrapper.style1 {
 			background-image: none;
 			background-color: #fff;
@@ -2012,6 +2077,7 @@ input, select, textarea {
 			background-color: #fafafa;
 			text-shadow: 1px 1px 0px #fff;
 		}
+		
 
 		.wrapper.style3 {
 			background-color: #f4f4f4;

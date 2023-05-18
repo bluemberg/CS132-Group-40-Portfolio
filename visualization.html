@@ -32,8 +32,14 @@
 				<div class="col-12">
 					<section class="box style3 compact desc">
 						<h3>Outline</h3>
-							<ol class="outline" style="list-style-type:upper-roman">
-								<li><a href="#missing-values">Test</a></li>
+							<ol class="outline">
+								<li><a href="#vocabulary">Frequency: Vocabulary</a></li>
+								<li><a href="#rational-emotional">Frequency: Rational vs. Emotional</a></li>
+								<li><a href="#rating">Frequency: Tweet Ratings</a></li>
+								<li><a href="#annual_tweets">Comparison: Annual Tweet Frequency</a></li>
+								<li><a href="#account_age">Comparison: Account Age</a></li>
+								<li><a href="#age_vs_date">Comparison: Account Age vs. Date Posted</a></li>
+								<li><a href="#correlation">Correlation</a></li>
 							</ol>
 					</section>
 				</div>
@@ -43,12 +49,353 @@
 			<article class="wrapper style2 compact">
 				<div class="container">
 					<div class="row aln-center">
-						<div id="" class="col-12">
-							<section class="box style4 desc">
-								<h3>1st Visualization</h3>
-									Visualize<br>
+						<div class="col-12">
+							<section class="box desc">
+								<b><label style="color:grey">It's worth noting that the tweets gathered do not represent the whole dataset of tweets with dengvaxia
+									misinformation. These comparisons and visualizations might change as more data is collected.</label></b>
 							</section>
 						</div>
+						<div id="vocabulary" class="col-12">
+							<section class="box style4 desc">
+								<h3>Frequency: Vocabulary</h3>
+								One of the most important factors to look at when analyzing misinformation tweets is <b>the
+								most frequent words and terminologies</b> people mention in these data. Identifying these vocabulary allows us 
+								to better understand the main drivers why people publish misinformation.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	import nltk
+	from nltk import word_tokenize
+	from nltk.probability import FreqDist
+	from matplotlib import pyplot as plt
+	
+	# Display the total number of words present
+	token_temp = tweets_lemmatized.copy()
+	words = " ".join(token_temp)
+	print(f"The total number of words in the text is {len(words)}")
+	
+	# Find the frequency of words
+	fdist = FreqDist(word_tokenize(words))
+	fdict = dict(fdist)
+	
+	set_words, count_words = zip(*fdict.items())
+	set_words, count_words = list(set_words), list(count_words)
+	
+	# Creating a dataframe for word frequency
+	df_freq = pd.DataFrame(zip(set_words, count_words), columns=["words", "count"])
+	df_freq.sort_values("count", ascending=False, inplace=True)
+	df_freq.reset_index(drop=True, inplace=True)
+	df_freq = df_freq[:20]
+	
+	def get_colordict(palette, number, start):
+		pal = list(sns.color_palette(palette=palette, n_colors=number).as_hex())
+		color_d = dict(enumerate(pal, start=start))
+		return color_d
+	
+	# Plot the most frequent words
+	fdist.plot(20)
+	plt.show()
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/6a_vocabulary_line.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								Using line graph, we see that the word <b>'dengvaxia'</b>is the most mentioned term, followed by <b>'child'</b>
+									and <b>'vaccine'.</b> <br><br> 
+								
+								Plotting the word frequency using a <b>Sunburst Graph</b> will allow us to better visualize the 
+								distribution of different words across all the tweets.
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	n = 30
+	pal = list(sns.color_palette(palette="Reds_r", n_colors=n).as_hex())
+	
+	import plotly.express as px
+	fig = px.pie(df_freq[0:30], values="count", names="words", color_discrete_sequence=pal)
+	
+	fig.update_traces(
+		textposition="outside",
+		textinfo="percent+label",
+		hole=0.6,
+		hoverinfo="label+percent+name",
+	)
+	
+	# Plot frequency of words as Sunburst Graph
+	fig.update_layout(width=800, height=600, margin=dict(t=0, l=0, r=0, b=0))
+	fig.show()
+	
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/6b_vocublary_sunburst.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								Now, we can easily observe that the 4 most frequent mentioned words 
+								<b>make up more than 50% of the word frequency list</b> across all tweets! 
+								These are <b>'dengvaxia', 'child', 'vaccine'</b>, and <b>'kid'</b>.
+							</section>
+						</div>
+						<div id="rational-emotional" class="col-12">
+							<section class="box style4 desc">
+								<h3>Frequency: Rational vs. Emotional</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+# Bar Graph
+import seaborn as sns
+
+df = dengvaxia_nlp.copy()
+
+# Plots 'Content type' frequency in a bar graph
+sns.countplot(data=raw_data, x="Content type")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/7_content_type_bar.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								The dengvaxia controversy was a highly sensitive and polarizing issue at the time because it involved deaths of several 
+								children nationwide. Thus, it was <b>expected that the tweets gathered would be emotional in nature</b>, often people voicing out their 
+								views toward the government officials and expressing pity toward the alleged victims caused by the negligence of the authority. <br><br>
+
+								However, we also saw a significant proportion of tweets that contain scientific terms and reasoning, albeit often misleading, 
+								to try and assert validity of their opinions. This is reflected in the <b>'Content type' frequency graph</b> above.
+							</section>
+						</div>
+						<div id="rating" class="col-12">
+							<section class="box style4 desc">
+								<h3>Frequency: Tweet Ratings</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+# Plots 'Rating' frequency in a bar graph
+sns.countplot(data=raw_data, x="Rating")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/8_ratings_bar.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								<b>An overwhelming amount of tweets gathered consist of false information regarding Dengvaxia vaccines.</b><br><br>
+
+								This might be due to the fact that people were quick to believe that there was a correlation between Dengvaxia 
+								and the deaths of the children, when in fact, <b>there has been no definite proof published yet that would confirm 
+								these allegiations</b>. The tweets that insist on stating that the Dengvaxia vaccine was the cause of these reported deaths 
+								contribute to false information — Not because they mislead other people, or intentionally left pieces of information that 
+								would provide context to their claims, but rather simply provided <b>false and unproven information</b>.
+							</section>
+						</div>
+						<div id="annual_tweets" class="col-12">
+							<section class="box style4 desc">
+								<h3>Comparison: Annual Tweet Frequency</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Line Graph
+	import matplotlib.pyplot as plt
+	import plotly.express as px
+	
+	# Create frequency entries
+	x_tweetfreq = [i for i in range(2016, 2023)]
+	y_tweetfreq = []
+	for i in x_tweetfreq:
+		y_tweetfreq.append(len(df.loc[df["Date posted"] >= str(i)].loc[df["Date posted"] < str(i + 1)]))
+	
+	# Plot annual tweet frequency in a bar graph
+	plt.bar(x_tweetfreq, y_tweetfreq, color="#76b5aa")
+	plt.xlabel("Year")
+	plt.ylabel("Number of Tweets")
+	plt.title("Number of misinformation tweets each year")
+	plt.show()
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/9_annual_tweets_bar.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								<b>2018 saw the sudden rise of tweets with Dengvaxia misinformation.</b><br><br>
+								This was the time when Dengvaxia vaccination cases became a nationwide scandal. Blame was put on 
+								pharmaceutical firms and government officials who initiated the Dengvaxia vaccination program. 
+								The nationwide scandal began when deaths of several children are allegedly being linked to Dengvaxia vaccines. 
+								Hence, 2018 was the year when the issue was the top of the headlines for many months.
+							</section>
+						</div>
+						<div id="account_age" class="col-12">
+							<section class="box style4 desc">
+								<h3>Comparison: Account Age</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Line Graph
+	import matplotlib.pyplot as plt
+	
+	x_joinedfreq1 = [i for i in range(2008, 2023)]
+	y_joinedfreq1 = []
+	for i in x_joinedfreq1:
+		y_joinedfreq1.append(len(df.loc[df["Joined"] >= str(i)].loc[df["Joined"] < str(i + 1)]))
+	
+	x_joinedfreq2 = [i for i in range(2016, 2023)]
+	y_joinedfreq2 = []
+	for i in x_joinedfreq2:
+		y_joinedfreq2.append(len(df.loc[df["Joined"] >= str(i)].loc[df["Joined"] < str(i + 1)]))
+	
+	# Plot yearly misinformation accounts created in a bar graph
+	plt.bar(x_joinedfreq1, y_joinedfreq1, color="#B57681")
+	plt.xlabel("Year")
+	plt.ylabel("Number of Accounts")
+	plt.title("Number of misinfo accounts created each year")
+	plt.show()
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/10_misinfo_accounts_bar.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								Interestingly, <b>2018</b> was also the year when accounts who posted misinfo tweets were created. <br><br>
+								In the next section, we take a closer look by comparing these variables side-by-side in a single histogram.
+							</section>
+						</div>
+						<div id="age_vs_date" class="col-12">
+							<section class="box style4 desc">
+								<h3>Comparison: Account Age vs. Date Posted</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	temp = pd.DataFrame(
+		{"Joined": y_joinedfreq2, "Tweet Frequency": y_tweetfreq},
+		index=x_tweetfreq,
+	)
+
+	# Plot account age vs. date posted in a bar graph
+	temp.plot(kind="bar", color=["#B57681", "#76b5aa"])
+	plt.title("Account Age vs. Date Posted")
+	plt.xlabel("Year")
+	plt.ylabel("Count")
+	plt.show()
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/11_age_date_bar.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								We can observe that <b>2018</b> was both the year where the most gathered tweets are from, and also when the majority of accounts 
+								who engaged in misinfo tweets are created. We can recall that this was the year when the Dengvaxia issue became a national scandal 
+								and a hot topic not just locally but internationally.<br><br>
+
+								Thus, it is not surprising that people who want to voice their opinions on this matter created their accounts this year. 
+								It is also a possibility that these newly-created accounts were trolls who wanted to be anonymous to spread fake information without 
+								facing consequences.
+							</section>
+						</div>
+						<div id="correlation" class="col-12">
+							<section class="box style4 desc">
+								<h3>Correlation</h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+	# Correlation plot (heat map)
+	import plotly.express as px
+	
+	df = dengvaxia_nlp.copy()
+	
+	features = [
+		"Likes",
+		"Retweets",
+		"Followers",
+		"Following",
+		"content-type_Emotional",
+		"content-type_Rational",
+		"tweet-type_Text",
+		"tweet-type_Image",
+		"tweet-type_Video",
+		"tweet-type_URL",
+		"tweet-type_Reply",
+	]
+	corr = df[features].corr()
+	
+	fig = px.imshow(
+		corr,
+		color_continuous_scale="RdBu",
+		zmin=-1,
+		zmax=1,
+		labels=dict(x="Features", y="Features", color="Correlation"),
+		x=corr.columns,
+		y=corr.columns,
+		title="Correlation Between Features",
+	)
+	fig.show()
+	
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/12_Correlation.png" alt="" class="result"/>
+							</section>
+						</div>
+						div ends here
 					</div>
 				</div>
 			</article>

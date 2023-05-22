@@ -90,11 +90,6 @@
 	df_freq.reset_index(drop=True, inplace=True)
 	df_freq = df_freq[:20]
 	
-	def get_colordict(palette, number, start):
-		pal = list(sns.color_palette(palette=palette, n_colors=number).as_hex())
-		color_d = dict(enumerate(pal, start=start))
-		return color_d
-	
 	# Plot the most frequent words
 	fdist.plot(20)
 	plt.show()
@@ -232,14 +227,14 @@ sns.countplot(data=raw_data, x="Rating")
 	import matplotlib.pyplot as plt
 	import plotly.express as px
 	
-	# Create frequency entries
 	x_tweetfreq = [i for i in range(2016, 2023)]
 	y_tweetfreq = []
 	for i in x_tweetfreq:
-		y_tweetfreq.append(len(df.loc[df["Date posted"] >= str(i)].loc[df["Date posted"] < str(i + 1)]))
+			y_tweetfreq.append(
+					len(df.loc[df["Date posted"] >= str(i)].loc[df["Date posted"] < str(i + 1)])
+			)
 	
-	# Plot annual tweet frequency in a bar graph
-	plt.bar(x_tweetfreq, y_tweetfreq, color="#76b5aa")
+	plt.plot(x_tweetfreq, y_tweetfreq, color="#76b5aa")
 	plt.xlabel("Year")
 	plt.ylabel("Number of Tweets")
 	plt.title("Number of misinformation tweets each year")
@@ -250,7 +245,7 @@ sns.countplot(data=raw_data, x="Rating")
 						</div>
 						<div class="col-12">
 							<section class="box style5">
-								<img src="images/9_annual_tweets_bar.png" alt="" class="result"/>
+								<img src="images/9_annual_tweets_line.png" alt="" class="result"/>
 							</section>
 						</div>
 						<div class="col-12">
@@ -395,7 +390,34 @@ sns.countplot(data=raw_data, x="Rating")
 								<img src="images/12_Correlation.png" alt="" class="result"/>
 							</section>
 						</div>
-						div ends here
+						<div class="col-12">
+							<section class="box style6 desc">
+								In the correlation matrix, we can identify a number of features that might have been correlated. 
+								Recall that a correlation coefficient of: <br>
+								<ul>
+									<li>-1 means that the 2 variables have an inverse linear relationship: when X increases, Y decreases</li>
+									<li>0 means no linear correlation between X and Y</li>
+									<li>1 means that the 2 variables have a linear relationship: when X increases, Y increases too</li>
+								</ul>
+								The <b>emotional content and rational content</b> tweets are the most evident one as they have a <b>correlation 
+								coefficient of -1</b>, which tells us that they are <b>mutually exclusive</b>. <br><br>
+
+								The <b>likes and retweets</b> features also have a <b>high correlation score of 0.69</b>. This makes sense as both of these 
+								elements describe the engagement rating of a tweet. Thus, if a tweet has more likes (retweets), then it's bound 
+								to have more retweets (likes) as well. <br><br>
+
+								The <b>following and followers counts</b> have a <b>modest correlation of 0.34</b>. This number makes sense 
+								as they both represent the number of connections of an individual in Twitter. Thus, as the numbers of following 
+								(followers) of an account increases, the number of its followers (following) increase as well. However, we have 
+								seen a number of cases where this is not followed. For example, celebrities, media personalities, and official 
+								accounts tend to have a high disproportion between these numbers as they tend to have a huge number of followers 
+								but a few following. <br><br>
+
+								Finally, the features <b>tweet-type_URL and tweet_type_REPLY</b> also has a <b>correlation of -0.46</b>. However, drawing a hypothesis 
+								about the relationship between these two categories is not meaningful as a tweet containing a URL or a person replying 
+								to another tweet is completely unrelated with each other.
+							</section>
+						</div>
 					</div>
 				</div>
 			</article>

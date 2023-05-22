@@ -5,4 +5,4 @@ A portfolio for Dengvaxia Data Science Project made by Group 40.
 ## Author(s)
 **MONEDA, Blooming Dan**\
 **SENATIN, Luis Miguel**\
-**Verdad, Christian Karl**\
+**Verdad, Christian Karl**

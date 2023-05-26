@@ -1,6 +1,6 @@
 # Introduction
 
-A Data Science Project analyzing the misinformation and disinformation tweets about Dengvaxia on Twitter.
+A Data Science project analyzing the misinformation and disinformation tweets about Dengvaxia on Twitter.
 
 ## Author(s)
 **MONEDA, Blooming Dan**\

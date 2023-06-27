@@ -40,7 +40,7 @@
                                         <li><a href="#choose_stat_test">Choosing a Statistical Test</a></li>
                                         <li><a href="#grouping_of_tweets">Grouping of Tweets</a></li>
                                         <li><a href="#Kruskal-Wallis">Kruskal-Wallis Test</a></li>
-                                        <li><a href="#RnD">Results and Discussion</a></li>
+                                        <li><a href="#conclusion">Conclusion</a></li>
                                     </ol>
                                 <li><a href="#machine_learning">Machine Learning</a></li>
                                     <ol class="outline">
@@ -446,14 +446,20 @@
 </pre>
 							</section>
 						</div>
-                        <div id="RnD" class="col-12">
+                        <div class="col-12">
+							<section class="box style6 desc">
+								Since all p-values (0.2135, 0.5382, 0.9181) are greater than our significance level of 0.05, there is no 
+                                significant difference in all engagement types between the 5 different topics.
+							</section>
+						</div>
+                        <div id="conclusion" class="col-12">
 							<section class="box style4 desc">
-								<h3><a href="#table_of_contents">1.5. Discussion</a></h3>
+								<h3><a href="#table_of_contents">1.5. Conclusion</a></h3>
 							</section>
 						</div>
 						<div class="col-12">
 							<section class="box style6 desc">
-								By Kruskal-Wallis Test, we can see that there are no significant difference in any measure of engagement, 
+								By Kruskal-Wallis Test, we conclude that there are no significant differences in any measure of engagement, 
                                 i.e. likes, retweets, replies, between different topics. <b>Thus, we cannot prove our hypothesis that "Tweets 
                                 about children's deaths resulted in a higher average amount of engagement based on the tweet topic."</b> <br><br>
 
@@ -470,17 +476,19 @@
 							<section class="box style6 desc">
                                 Since the hypothesis deals with comparing different content in tweets, the chosen model to use is <b>Topic Clustering 
                                 using Latent Dirichlet Allocation </b>(LDA). Since the model is used to find specific topics in the data, it is innately 
-                                an unsupervised model which means it will learn the structure and relationships in the data by itself then uses 
-                                this model to create an output. The output of LDA is the <b>tweets clustered by the model into the specified number 
-                                of topics</b>.<br><br>
+                                an unsupervised model which means it will learn the structure and relationships in the data then uses this model to 
+                                create an output. The output of LDA is the <b>tweets clustered by the model into the specified number of topics</b>.<br><br>
 
                                 Latent Dirichlet Allocation works by first looking at how many topics the data will be grouped to. The process then
-                                starts with assigning each token of all tweets a random topic number based on the number of topics specified. 
-                                Afterwards, the iterative part of the model starts when the model looks at which topic each tweet belongs to based 
-                                on these values and combines this with how much the topic associates with each token in the tweet. From this 
-                                combination, the model decides if the tweet changes which topic it belongs to. Depending on the assessment of the 
-                                model, values of each token in the tweet will be adjusted to move them closer to a certain topic number. After these 
-                                adjustments, a new iteration is started.<br><br>
+                                starts with assigning each word for all tweets a random topic number based on the number of topics specified creating
+                                a document-topic matrix. From this, the <b>probability of each tweet belonging to a topic</b> is computed. The first iterative step 
+                                starts in the computation of this probability.<br><br>
+                                
+                                Afterwards, for all the words in all tweets, the word count for how many times a word appeared in each topic is obtained, 
+                                creating a words-topic matrix From here, the <b>probability for each word belonging to a topic</b> is computed. <br><br>
+
+                                Using both these probabilities, the model chooses which topic a document belongs to by <b>maximizing the product</b> of these 
+                                two probabilities through iteration with hyperparameters starting from getting the document-topic matrix probabilities.<br><br>
                                 
                                 For every iteration, the model will <b>group tweets with similar content closer to each other</b> while separating it 
                                 from other tweet content. At the end of the process, the model is expected to have grouped the tweets into its separate 
@@ -494,10 +502,9 @@
 						</div>
 						<div class="col-12">
 							<section class="box style6 desc">
-                                Since the data does not have to be lemmatized, the data is taken from an <b>earlier stage of preprocessing</b>. Only the tweets 
-                                column is necessary for the machine learning portion. The tweets are then formatted using the CountVectorizer class. This 
-                                class tokenizes the tweets and also provides the occurrences of each token in the tweet and outputs a <b>sparse matrix</b>. 
-                                This will be used as the input for the model.
+                                From the output of data preprocessing, only the tweets column is necessary for the machine learning portion. The tweets are 
+                                then formatted using the CountVectorizer class. This class tokenizes the tweets and also provides the occurrences of each 
+                                token in the tweet and outputs a <b>sparse matrix</b>. This will be used as the input for the model.
 							</section>
 						</div>
                         <div class="col-12">

@@ -1,0 +1,738 @@
+<!DOCTYPE HTML>
+<!--
+	Miniport by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Preprocessing Phase</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/prism.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Nav -->
+			<nav id="nav">
+				<ul class="container">
+					<li><a href="index.html">Home</a></li>
+					<li><a href="preprocessing.html">Data Preprocessing</a></li>
+					<li><a href="visualization.html">Data Visualization</a></li>
+					<li><a href="#top">Data Modeling</a></li>
+				</ul>
+			</nav>
+
+			<!-- Header -->
+			<article class="wrapper style1 compact">
+				<header id="table_of_contents">
+					<h2>Data Modeling</h2>
+					<p>This section presents the methods used to analyze the data, the results, and implications of the observations.</p>
+				</header>
+				<div class="col-12">
+					<section class="box style3 compact desc">
+						<h3>Outline</h3>
+							<ol class="outline">
+                                <li><a href="#statistical_modeling">Statistical Modeling</a></li>
+                                    <ol class="outline">
+                                        <li><a href="#how_to_group_tweets">How tweets will be grouped</a></li>
+                                        <li><a href="#choose_stat_test">Choosing a Statistical Test</a></li>
+                                        <li><a href="#grouping_of_tweets">Grouping of Tweets</a></li>
+                                        <li><a href="#Kruskal-Wallis">Kruskal-Wallis Test</a></li>
+                                        <li><a href="#RnD">Results and Discussion</a></li>
+                                    </ol>
+                                <li><a href="#machine_learning">Machine Learning</a></li>
+                                    <ol class="outline">
+                                        <li><a href="#ML_preparation">Preparation of Data</a></li>
+                                        <li><a href="#ML_training">Model Training</a></li>
+                                        <li><a href="#ML_output">Model Output</a></li>
+                                        <li><a href="#ML_evaluation">Model Evaluation</a></li>
+                                        <li><a href="#ML_interpretation">Interpretation of Results</a></li>
+                                    </ol>
+							</ol>
+					</section>
+				</div>
+			</article>
+		
+			<!-- Content -->
+			<article class="wrapper style2 compact">
+				<div class="container">
+					<div class="row aln-center">
+						<div id="statistical_modeling" class="col-12">
+							<section class="box style9 desc">
+								<h3><a href="#table_of_contents">Statistical Modeling</a></h3>
+							</section>
+						</div>
+						<div id="how_to_group_tweets" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">1.1. How tweets will be grouped</a></h3>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style6 desc">
+								A question to tackle, then, is how tweets will be <b>grouped</b> together based on their <b>topics</b>.<br><br>
+
+                                Recall that in the <b>previous</b> step of visualization, we successfully created a visual graph 
+                                to identify the <b>most frequent words</b> mentioned across all 150 gathered tweets. Let us take 
+                                a look at the graph again:
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/6b_vocublary_sunburst.png" alt="" class="result"/>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								From here, we considered the significant <b>keywords</b> and <b>grouped</b> them together to form 
+                                different topics. The topics, and their keywords, are as follows: <br><br>
+
+                                <h4>Children:</h4>
+                                    <ul>
+                                        <li>
+                                            This is arguably the <b>most prominent topic of the Dengvaxia misinformation 
+                                            tweets,</b> and which the hypothesis also revolves around.
+                                        </li>
+                                        <li>
+                                            Keywords <b>'child'</b> and <b>'kid'</b>.
+                                        </li>
+                                    </ul>
+                                <h4>Politics</h4>
+                                    <ul>
+                                        <li>
+                                            Politics is also said to be the <b>reason why Dengvaxia scandal happened</b> based on the tweets.
+                                        </li>
+                                        <li>
+                                            Keyword <b>'aquino'</b>.
+                                        </li>
+                                    </ul>
+                                <h4> Sanofi:</h4>
+                                    <ul>
+                                        <li>
+                                            Sanofi Pasteur Inc. is the <b>pharmaceutical company who made</b> Dengvaxia vaccines.
+                                        </li>
+                                        <li>
+                                            Keyword <b>'sanofi'</b>.
+                                        </li>
+                                    </ul>
+                                <h4>Vaccine:</h4>
+                                    <ul>
+                                        <li>
+                                            Another angle to examine is the <b>vaccine hesistancy of Filipinos</b> before, during, and after 
+                                            this nationwide issue, and so this topic is particularly important.
+                                        </li>
+                                        <li>
+                                            Keyword <b>'vaccine'</b>.
+                                        </li>
+                                    </ul>
+                                <h4>Death (regardless of age):</h4>
+                                    <ul>
+                                        <li>
+                                            This is to ensure that we also examine the <b>difference between the engagements of tweets about 
+                                                children's death and tweets about death</b> in general, regardless if the victim is an adult or a child.
+                                        </li>
+                                        <li>
+                                            Keywords <b>'death'</b>, '<b>victim'</b>, <b>'killed'</b>, <b>'dead'</b>, and <b>'died'</b>
+                                        </li>
+                                    </ul>      
+							</section>
+						</div>
+						<div id="choose_stat_test" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">1.2. Choosing a Statistical Test</a></h3>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style6 desc">
+								In the research problem, we are primarily concerned with <b>the number of engagements</b> (likes, replies, 
+                                and retweets) of the tweets, and whether there are <b>distinct differences of distribution</b> between these 
+                                numbers depending on the content (topic) of the tweets.<br><br>
+
+                                First, it is essential to examine the <b>key features</b> of our data.<br><br>
+
+                                <h3>Independence</h3>
+                                During the gathering of disinformation tweets, <b>we did not consider the number of engagements the tweet 
+                                has gotten whether we would include it in our dataset or not</b>. Once a tweet was analyzed to be a 
+                                disinformation tweet about Dengvaxia, then it was immediately added to the dataset.<br><br>
+
+                                <b>Therefore, the observations, i.e. features including engagements, are independent of each other.</b><br><br>
+                                
+                                <h3>Normality</h3>
+                                We saw during the preprocessing step that the number of likes, replies, and retweets do not follow the normal 
+                                distribution. Instead, they are all <b>skewed to the left</b>.<br><br>
+
+                                <b>Therefore, the number of likes, replies, and retweets follow a non-normal distribution.</b><br><br>
+
+                                <h3>Homogeneity of Variances</h3>
+                                This feature means that the sample data come from a <b>population with the same variance</b>. With this, we 
+                                shall perform a test.<br><br>
+
+                                Here, we are choosing the <b>Levene's Test for Equal Variances</b>. The test allows us to test the null hypothesis 
+                                that a given input of samples are from populations with equal variances. The alternative hypothesis is that 
+                                the samples do not come from populations with equal variances. Unlike other variance test, e.g. Barlett's 
+                                test, Levene's test is more suited for <b>samples from significantly non-normal populations</b>, which is the case 
+                                for this data.
+
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    ## Levene's Test
+    from scipy.stats import levene
+    
+    # dengvaxia_likes = [int(i) for i in dengvaxia_data["Likes"].tolist()]
+    # dengvaxia_retweets = [int(i) for i in dengvaxia_data["Retweets"].tolist()]
+    # dengvaxia_replies = [int(i) for i in dengvaxia_data["Replies"].tolist()]
+    
+    dengvaxia_likes = dengvaxia_data["Likes"].tolist()
+    dengvaxia_retweets = dengvaxia_data["Retweets"].tolist()
+    dengvaxia_replies = dengvaxia_data["Replies"].tolist()
+
+    if levene(dengvaxia_likes, dengvaxia_retweets, dengvaxia_replies)[1] < 0.05:
+        print('Reject the null hypothesis of equal variance between groups.')
+        print(f'P-value is {levene(dengvaxia_likes, dengvaxia_retweets, dengvaxia_replies)[1]}.')
+    else:
+        print('Fail to reject the null hypothesis of equal variance between groups.')
+        print(f'P-value is {levene(dengvaxia_likes, dengvaxia_retweets, dengvaxia_replies)[1]}.')
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+	Fail to reject the null hypothesis of equal variance between groups.
+        P-value is 0.9585784653296681.
+</code>
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style6 desc">
+                                <b>Hence, the number of likes, retweets, and replies of all tweets in the dataset have unequal variances.</b><br><br>
+
+
+                                The features above are actually the <b>assumptions when using parametric statistical test</b>. Because our data do 
+                                not follow the assumption of normality and homogeneity of variances, parametric tests are already out of the 
+                                picture when choosing for the appropriate statistical test.<br><br>
+
+                                Because we're essentially looking for the statistical difference between the distribution of different engagements 
+                                of multiple different topics or groups, the first statistical test to consider is the <b>MANOVA</b> (multivariate analysis 
+                                of variance) test. MANOVA is used to determine whether or not there is a <b>statistically significant difference 
+                                between the means of three or more independent groups</b>, where we have two or more response variables.<br><br>
+
+                                In our case, the independent groups are the five different topics of tweets, mentioned above, and the response 
+                                variables are the three engagement values: likes, retweets, and replies. Still, <b>MANOVA is a parametric test</b> and so 
+                                we cannot use it in this dataset.<br><br>
+
+                                What we can do, however, is instead of executing a single MANOVA test, we divide it into <b>multiple tests for each 
+                                response variable</b> (where ANOVA can be used). Since ANOVA is not an option, we instead perform its non-parametric 
+                                alternative, called <b>Kruskal-Wallis Test</b>. <br><br>
+
+                                <h3>Kruskal-Wallis Test</h3>
+                                As mentioned, Kruskal-Wallis is the <b>non-parametric</b> equivalent of ANOVA.<br><br>
+
+                                Since it's a non-parametric test, Kruskal-Wallis test does not assume a normal distribution. Instead, it assumes 
+                                that each group's <b>distribution is identically shaped and scaled</b>. We already saw that the data for likes, retweets, 
+                                and replies are identically skewed to the left.<br><br>
+
+                                The null hypothesis for this test is that there is no difference in the median values of the groups. As with any 
+                                statisical test, if the p-value is larger than the significance level or alpha, the null hypothesis is retained, 
+                                otherwise it is rejected.<br><br>
+
+                                In Python, it returns the result of H-statistic and the p-value. Note that disproving the null hypothesis does not 
+                                reveal how the groups differ, and post hoc comparisons may be required.<br><br>
+
+                                Thus, the <b>final process</b> would be:<br>
+                                <ol>
+                                    <li>Group the tweets into the five aforementioned topics using keyword filtering.</li>
+                                    <li>Create five lists of number of likes, for each different topics.</li>
+                                    <li>Repeat step 2 for creating five lists for retweets.</li>
+                                    <li>Repeat step 2 for creating five lists for replies.</li>
+                                    <li>Do a Kruskal-Wallis Test for the number of likes of the five topics.</li>
+                                    <li>Do a Kruskal-Wallis Test for the number of retweets of the five topics.</li>
+                                    <li>Do a Kruskal-Wallis Test for the number of replies of the five topics.</li>
+                                </ol>
+							</section>
+						</div>
+                        <div id="grouping_of_tweets" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">1.3. Grouping of Tweets</a></h3>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style6 desc">
+								The following blocks of code were used to generate the tweet groupings:
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # These are the tweets that contain the keywords "child" and "kid".
+    remove_indices = [0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    children = dengvaxia_data[dengvaxia_data['Tweet'].str.contains("child|kid")==True]
+    children = children.drop(children.columns[remove_indices], axis = 1)
+    children.insert(loc = 0, column = "Topic", value = "children")
+
+    children_likes = children["Likes"].tolist()
+    children_replies = children["Replies"].tolist()
+    children_retweets = children["Retweets"].tolist()
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # These are the tweets that contain the keyword "aquino".
+    politics = dengvaxia_data[dengvaxia_data['Tweet'].str.contains("aquino")==True]
+    politics = politics.drop(politics.columns[remove_indices], axis = 1)
+    politics.insert(loc = 0, column = "Topic", value = "politics")
+
+    politics_likes = politics["Likes"].tolist()
+    politics_replies = politics["Replies"].tolist()
+    politics_retweets = politics["Retweets"].tolist()
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # These are the tweets that contain the keyword "sanofi". 
+    # Sanofi Pasteur Inc. is the pharmaceutical company who made Dengvaxia vaccines.
+    sanofi = dengvaxia_data[dengvaxia_data['Tweet'].str.contains("sanofi")==True]
+    sanofi = sanofi.drop(sanofi.columns[remove_indices], axis = 1)
+    sanofi.insert(loc = 0, column = "Topic", value = "sanofi")
+
+    sanofi_likes = sanofi["Likes"].tolist()
+    sanofi_replies = sanofi["Replies"].tolist()
+    sanofi_retweets = sanofi["Retweets"].tolist()
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # These are the tweets that contain the keyword "vaccine".
+    vaccine = dengvaxia_data[dengvaxia_data['Tweet'].str.contains("vaccine")==True]
+    vaccine = vaccine.drop(vaccine.columns[remove_indices], axis = 1)
+    vaccine.insert(loc = 0, column = "Topic", value = "vaccine")
+    
+    vaccine_likes = vaccine["Likes"].tolist()
+    vaccine_replies = vaccine["Replies"].tolist()
+    vaccine_retweets = vaccine["Retweets"].tolist()
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # These are the tweets that contain the keywords "death", "victim", "killed", "dead", and "died".
+    death = dengvaxia_data[dengvaxia_data['Tweet'].str.contains("death|victim|killed|dead|died")==True]
+    death = death.drop(death.columns[remove_indices], axis = 1)
+    death.insert(loc = 0, column = "Topic", value = "death")
+    
+    death_likes = death["Likes"].tolist()
+    death_replies = death["Replies"].tolist()
+    death_retweets = death["Retweets"].tolist()
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div id="Kruskal-Wallis" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">1.4. Kruskal-Wallis Implementation and Results</a></h3>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style6 desc">
+								The implementation and results of the Kruskal-Wallis tests for each engagement type can be seen below.
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # Likes
+    from scipy import stats
+    
+    likes_result = stats.kruskal(children_likes, politics_likes, sanofi_likes, vaccine_likes, death_likes)[1]
+    
+    if likes_result < 0.05:
+        print('Reject the null hypothesis. There is a significant difference in likes between different topics.')
+    else:
+        print('Retain the null hypothesis. There are no significant difference in likes between different topics.')
+    print(f'P-value is {likes_result}.')
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+        Retain the null hypothesis. There are no significant difference in likes between different topics.
+        P-value is 0.21353072371928566.
+</code>
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # Retweets
+    from scipy import stats
+    
+    retweets_result = stats.kruskal(children_retweets, politics_retweets, sanofi_retweets, vaccine_retweets, death_retweets)[1]
+    
+    if retweets_result < 0.05:
+        print('Reject the null hypothesis. There is a significant difference in retweets between different topics.')
+    else:
+        print('Retain the null hypothesis. There are no significant difference in retweets between different topics.')
+    print(f'P-value is {retweets_result}.')
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+        Retain the null hypothesis. There are no significant difference in retweets between different topics.
+        P-value is 0.5382366090537352.
+</code>
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # Replies
+    from scipy import stats
+    
+    replies_result = stats.kruskal(children_replies, politics_replies, sanofi_replies, vaccine_replies, death_replies)[1]
+    
+    if replies_result < 0.05:
+        print('Reject the null hypothesis. There is a significant difference in replies between different topics.')
+    else:
+        print('Retain the null hypothesis. There are no significant difference in replies between different topics.')
+    print(f'P-value is {replies_result}.')
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+        Retain the null hypothesis. There are no significant difference in replies between different topics.
+        P-value is 0.9181043703132528.
+</code>
+</pre>
+							</section>
+						</div>
+                        <div id="RnD" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">1.5. Discussion</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+								By Kruskal-Wallis Test, we can see that there are no significant difference in any measure of engagement, 
+                                i.e. likes, retweets, replies, between different topics. <b>Thus, we cannot prove our hypothesis that "Tweets 
+                                about children's deaths resulted in a higher average amount of engagement based on the tweet topic."</b> <br><br>
+
+                                Hence, we will not perform any post hoc comparisons as there are <b>no difference in independent groups</b> between 
+                                these outcome variables in the first place.
+							</section>
+						</div>
+						<div id="machine_learning" class="col-12">
+							<section class="box style9 desc">
+								<h3><a href="#table_of_contents">Machine Learning</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                Since the hypothesis deals with comparing different content in tweets, the chosen model to use is <b>Topic Clustering 
+                                using Latent Dirichlet Allocation </b>(LDA). Since the model is used to find specific topics in the data, it is innately 
+                                an unsupervised model which means it will learn the structure and relationships in the data by itself then uses 
+                                this model to create an output. The output of LDA is the <b>tweets clustered by the model into the specified number 
+                                of topics</b>.<br><br>
+
+                                Latent Dirichlet Allocation works by first looking at how many topics the data will be grouped to. The process then
+                                starts with assigning each token of all tweets a random topic number based on the number of topics specified. 
+                                Afterwards, the iterative part of the model starts when the model looks at which topic each tweet belongs to based 
+                                on these values and combines this with how much the topic associates with each token in the tweet. From this 
+                                combination, the model decides if the tweet changes which topic it belongs to. Depending on the assessment of the 
+                                model, values of each token in the tweet will be adjusted to move them closer to a certain topic number. After these 
+                                adjustments, a new iteration is started.<br><br>
+                                
+                                For every iteration, the model will <b>group tweets with similar content closer to each other</b> while separating it 
+                                from other tweet content. At the end of the process, the model is expected to have grouped the tweets into its separate 
+                                topics.
+							</section>
+						</div>
+						<div id="ML_preparation" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">2.1. Preparation of Data</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                Since the data does not have to be lemmatized, the data is taken from an <b>earlier stage of preprocessing</b>. Only the tweets 
+                                column is necessary for the machine learning portion. The tweets are then formatted using the CountVectorizer class. This 
+                                class tokenizes the tweets and also provides the occurrences of each token in the tweet and outputs a <b>sparse matrix</b>. 
+                                This will be used as the input for the model.
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    import pandas as pd
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    path = "Preprocessed Dengvaxia Data.csv"
+    dengvaxia_data = pd.read_csv(path, header=0)
+    tweets = dengvaxia_data['Tweet'].copy()
+
+    vectorizer = CountVectorizer()
+
+    X = vectorizer.fit_transform(tweets)
+    X
+</code> 
+</pre>
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="compact">
+        &lt;150x1173 sparse matrix of type '&lt;class 'numpy.int64'&gt;'
+            with 2380 stored elements in Compressed Sparse Row format&gt;
+</code>
+</pre>
+							</section>
+						</div>
+						<div id="ML_training" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">2.2. Model Training</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                The data is fit into the <b>LDA class from scikit-learn</b>. After testing different numbers of components or topics 
+                                to divide the tweets into, the best determined number of components is <b>5</b>. The number of iterations is set to 50 since 
+                                having more iterations usually means getting a more accurate result.
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    from sklearn.decomposition import LatentDirichletAllocation
+
+    lda = LatentDirichletAllocation(n_components=5, max_iter=50, random_state=123)
+    lda.fit(X)
+</code> 
+</pre>
+							</section>
+						</div>
+						<div id="ML_output" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">2.3. Model Output</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                To visualize the clusters generated, the output of the model was graphed by plotting the <b>10 most frequently 
+                                used words</b> for each topic cluster. This allows us to see which content are in each cluster is, and the 
+                                frequency of key words from the tweets.
+							</section>
+						</div>
+                        <div class="col-12">
+							<section class="box style5">
+<pre>
+<code class="language-python">
+    # Used the example in the documentation in https://scikit-learn.org/stable/auto_examples/applications/plot_topics_extraction_with_nmf_lda.html#sphx-glr-auto-examples-applications-plot-topics-extraction-with-nmf-lda-py
+    import matplotlib.pyplot as plt
+    
+    # Function to plot top words of each topic cluster
+    def plot_top_words(model, feature_names, n_top_words, title):
+        fig, axes = plt.subplots(2, 3, figsize=(15, 20), sharex=True)
+        axes = axes.flatten()
+        for topic_idx, topic in enumerate(model.components_):
+            top_features_ind = topic.argsort()[: -n_top_words - 1 : -1]
+            top_features = [feature_names[i] for i in top_features_ind]
+            weights = topic[top_features_ind]
+    
+            ax = axes[topic_idx]
+            ax.barh(top_features, weights, height=0.7)
+            ax.set_title(f"Topic {topic_idx +1}", fontdict={"fontsize": 30})
+            ax.invert_yaxis()
+            ax.tick_params(axis="both", which="major", labelsize=20)
+            for i in "top right left".split():
+                ax.spines[i].set_visible(False)
+            fig.suptitle(title, fontsize=40)
+    
+        plt.subplots_adjust(top=0.90, bottom=0.05, wspace=0.90, hspace=0.3)
+        plt.show()
+    
+    # Plotting the top 10 words
+    words = vectorizer.get_feature_names_out()
+    plot_top_words(lda, words, 10, "Top 10 words from the 5 topic clusters")
+</code> 
+</pre>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style5">
+								<img src="images/13_LDA_results.png" width="900px" alt="" class="result"/>
+							</section>
+						</div>
+						<div id="ML_evaluation" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">2.4. Model Evaluation</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                Displayed above is the output of the model. The graphs show 5 different clusters, each with their 
+                                own set of frequently used words. The model was able to separate the tweets into 5 different topics 
+                                since the top frequent words from each cluster are mostly unique among all the topics. <b>Therefore, the 
+                                model is valid and can be used for further interpretation.</b>
+							</section>
+						</div>
+						<div id="ML_interpretation" class="col-12">
+							<section class="box style4 desc">
+								<h3><a href="#table_of_contents">2.5. Interpretation of Results</a></h3>
+							</section>
+						</div>
+						<div class="col-12">
+							<section class="box style6 desc">
+                                The graphs can best be interpreted by looking at the words at <b>similar levels from top to bottom</b>. Across 
+                                all 5 topic clusters, most common word is <b>'dengvaxia'</b>. Since all the tweets in the data contain the word 
+                                "dengvaxia", this essentially shows the proportion of tweets that each cluster has. The next four rows 
+                                show one unifying concept which is <b>'child deaths'</b>. This means that most of the tweets gathered have content 
+                                on child deaths alongside other content as well.<br><br>
+
+                                The rest of the rows show the words that make each topic cluster unique. Topic 1 involves <b>seeking justice 
+                                for the children</b> who received the dengue vaccine. Topic 2 has the highest number of tweets, and the 4 most 
+                                common words aside from 'dengvaxia' are variations of 'child' and 'death'. This topic focuses particularly 
+                                on the <b>deaths of the children</b> that were vaccinated with dengvaxia. Topic 3 has the least number of tweets, 
+                                and some of the common words have <b>no substantial meaning</b> such as "dont", "another" and "would". The notable words 
+                                in this topic are "controversy" and "yellow". <br><br>
+                                
+                                Topic 4 has the second least number of tweets, and the content of these tweets are <b>historical events</b> that 
+                                happened in the Philippines. Examples of these are "saf44", "noynoy", "sanofi", and "yolanda". The strange 
+                                part about this is that <b>all these events were grouped together</b> into 1 cluster. The reason for this can be 
+                                because some tweets in the dataset mention several of these events in a single tweet.  On the other hand, 
+                                The main content of topic 5 is <b>'aquino'</b> being the sixth most common word in the cluster. <br><br>
+                                
+                                The greatest conclusion that can be drawn from these graphs is that <b>majority of the dengvaxia misinformation 
+                                tweets involved the deaths of children due to dengvaxia</b>. Despite being clustered into 5 topics, the top 4 most 
+                                common words in these clusters still revolve around child deaths due to taking the dengvaxia vaccine. This strongly 
+                                implies that the content in tweets<br><br>
+                                
+                                Another conclusion from the graphs is that dengvaxia misinformation frequently involved being mentioned 
+                                <b>alongside other political issues</b>. Topic 4 had many of these issues stated, and the name of former president 
+                                Noynoy Aquino appeared in 4 out of the 5 clusters formed. 
+							</section>
+						</div>
+
+
+
+
+			</article>
+
+		<!-- Team -->
+			<article id="team" class="wrapper style4">
+				<div class="container medium">
+					<header>
+						<h2>We'd like to hear from you.</h2>
+						<p>You can add more information about the team members here.</p>
+					</header>
+					<div class="row">
+						<div class="col-12">
+							<form method="post" action="#">
+								<div class="row">
+									<div class="col-6 col-12-small">
+										<input type="text" name="name" id="name" placeholder="Name" />
+									</div>
+									<div class="col-6 col-12-small">
+										<input type="text" name="email" id="email" placeholder="Email" />
+									</div>
+									<div class="col-12">
+										<input type="text" name="subject" id="subject" placeholder="Subject" />
+									</div>
+									<div class="col-12">
+										<textarea name="message" id="message" placeholder="Message"></textarea>
+									</div>
+									<div class="col-12">
+										<ul class="actions">
+											<li><input type="submit" value="Send Message" /></li>
+											<li><input type="reset" value="Clear Form" class="alt" /></li>
+										</ul>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="col-12">
+							<hr />
+							<h3>Find me on ...</h3>
+							<ul class="social">
+								<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+								<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+								<li><a href="#" class="icon brands fa-dribbble"><span class="label">Dribbble</span></a></li>
+								<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+								<li><a href="#" class="icon brands fa-tumblr"><span class="label">Tumblr</span></a></li>
+								<li><a href="#" class="icon brands fa-google-plus"><span class="label">Google+</span></a></li>
+								<li><a href="#" class="icon brands fa-github"><span class="label">Github</span></a></li>
+								<!--
+								<li><a href="#" class="icon solid fa-rss"><span>RSS</span></a></li>
+								<li><a href="#" class="icon brands fa-instagram"><span>Instagram</span></a></li>
+								<li><a href="#" class="icon brands fa-foursquare"><span>Foursquare</span></a></li>
+								<li><a href="#" class="icon brands fa-skype"><span>Skype</span></a></li>
+								<li><a href="#" class="icon brands fa-soundcloud"><span>Soundcloud</span></a></li>
+								<li><a href="#" class="icon brands fa-youtube"><span>YouTube</span></a></li>
+								<li><a href="#" class="icon brands fa-blogger"><span>Blogger</span></a></li>
+								<li><a href="#" class="icon brands fa-flickr"><span>Flickr</span></a></li>
+								<li><a href="#" class="icon brands fa-vimeo"><span>Vimeo</span></a></li>
+								-->
+							</ul>
+							<hr />
+						</div>
+					</div>
+					<footer>
+						<ul id="copyright">
+							<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+				</div>
+			</article>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/prism.js"></script>
+	</body>
+</html>

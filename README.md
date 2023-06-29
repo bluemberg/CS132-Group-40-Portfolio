@@ -9,4 +9,4 @@ A Data Science project analyzing the misinformation and disinformation tweets ab
 
 ## Portfolio
 
-A web-based portfolio is available at [Github Pages](https://lmsenatin.github.io/CS132-Group-40-Portfolio/).
+A web-based portfolio is available [here](https://lmsenatin.github.io/CS132-Group-40-Portfolio/).

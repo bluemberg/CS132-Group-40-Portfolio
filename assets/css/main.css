@@ -314,8 +314,14 @@ input, select, textarea {
 		color: #3e3e3e;
 		text-decoration: none;
 	}
+
 /* Custom elements */
 
+	.profile {
+		width: 192px;
+		height: 192px;
+		margin-bottom: 1em;
+	}
 
 /* Row */
 
